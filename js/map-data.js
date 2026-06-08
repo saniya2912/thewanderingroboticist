@@ -144,68 +144,12 @@ function buildLandGrid() {
 }
 
 const LOCATIONS = [
-  {
-    city: 'Tokyo', country: 'Japan',
-    lat: 35.6, lon: 139.7,
-    tag: 'manipulation',
-    date: '2024.03',
-    visited: false,
-    body: 'Two weeks with a dexterous manipulation lab in Bunkyō. Notes on under-actuated grippers, the quiet humility of Japanese research culture, and late nights of soldering fueled by 7-Eleven onigiri.'
-  },
-  {
-    city: 'Nairobi', country: 'Kenya',
-    lat: -1.3, lon: 36.8,
-    tag: 'field robotics',
-    date: '2024.05',
-    visited: false,
-    body: 'Field deployment with an agricultural robotics startup outside Karen. Dust in every connector, GPS drift under acacia canopy, and the most patient farmers I have ever worked with.'
-  },
-  {
-    city: 'Lisbon', country: 'Portugal',
-    lat: 38.7, lon: -9.1,
-    tag: 'marine robotics',
-    date: '2024.07',
-    visited: false,
-    body: 'AUV trials in the Tagus estuary with a marine robotics group. Current-correction debugging until 2am, then pastel de nata for breakfast. A surprising amount of robotics is just patience.'
-  },
-  {
-    city: 'Bangalore', country: 'India',
-    lat: 12.9, lon: 77.6,
-    tag: 'perception',
-    date: '2024.09',
-    visited: false,
-    body: 'Home stretch. Computer vision pipelines through monsoon outages, and reconnecting with the robotics community that first taught me to break things on purpose.'
-  },
-  {
-    city: 'Reykjavik', country: 'Iceland',
-    lat: 64.1, lon: -21.9,
-    tag: 'extreme environments',
-    date: '2024.11',
-    visited: false,
-    body: 'Cold-weather testing for a polar exploration platform. Lessons in battery chemistry, lubricant viscosity, and how silence at -15°C changes the way you think about failure modes.'
-  },
-  {
-    city: 'São Paulo', country: 'Brazil',
-    lat: -23.5, lon: -46.6,
-    tag: 'swarm',
-    date: '2025.01',
-    visited: false,
-    body: 'Multi-agent coordination workshop at USP. A diagram drawn on a café napkin ended up as Figure 3 in a paper draft three months later — sometimes the best whiteboards are made of paper.'
-  },
-  {
-    city: 'Seoul', country: 'South Korea',
-    lat: 37.5, lon: 127.0,
-    tag: 'HRI',
-    date: '2025.04',
-    visited: false,
-    body: 'Human-robot interaction studies on a campus in Gwanak. The way participants greeted the robot before greeting me told me more about social robotics than the data ever did.'
-  },
-  {
-    city: 'London', country: 'UK',
-    lat: 51.5, lon: -0.1,
-    tag: 'base',
-    date: '2025 — present',
-    visited: true,
-    body: 'Home base. MRes Design Engineering at Imperial College. Where the maps get drawn, the writing gets done, and the bags get repacked for the next trip.'
-  }
+  { city: 'Seattle',     country: 'USA',       lat: 47.6, lon: -122.3, tag: '—', date: '—', visited: false, body: '[description to be added]' },
+  { city: 'London',      country: 'UK',        lat: 51.5, lon: -0.1,   tag: '—', date: '—', visited: true,  body: '[description to be added]' },
+  { city: 'Dublin',      country: 'Ireland',   lat: 53.3, lon: -6.3,   tag: '—', date: '—', visited: false, body: '[description to be added]' },
+  { city: 'Mumbai',      country: 'India',     lat: 19.1, lon: 72.9,   tag: '—', date: '—', visited: false, body: '[description to be added]' },
+  { city: 'Delhi',       country: 'India',     lat: 28.6, lon: 77.2,   tag: '—', date: '—', visited: false, body: '[description to be added]' },
+  { city: 'Pune',        country: 'India',     lat: 18.5, lon: 73.9,   tag: '—', date: '—', visited: false, body: '[description to be added]' },
+  { city: 'Gandhinagar', country: 'India',     lat: 23.2, lon: 72.7,   tag: '—', date: '—', visited: false, body: '[description to be added]' },
+  { city: 'Singapore',   country: 'Singapore', lat: 1.3,  lon: 103.8,  tag: '—', date: '—', visited: false, body: '[description to be added]' }
 ];
