@@ -1,106 +1,122 @@
-/* =====================================================
-   THE WANDERING ROBOTICIST — main.js
-   ===================================================== */
+const PX = 3;
+const GAP = 1;
+const CELL = PX + GAP;
 
-// ── Navbar: scroll state + active section highlighting ──
-const navbar   = document.getElementById('navbar');
-const sections = Array.from(document.querySelectorAll('section[id]'));
-const navLinks = Array.from(document.querySelectorAll('.nav-links a'));
+const canvas = document.getElementById('map-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = GRID_COLS * CELL;
+canvas.height = GRID_ROWS * CELL;
 
-function onScroll() {
-  // Scrolled state
-  navbar.classList.toggle('scrolled', window.scrollY > 60);
+const land = buildLandGrid();
 
-  // Active nav link
-  let current = '';
-  sections.forEach(sec => {
-    if (window.scrollY >= sec.offsetTop - 140) current = sec.id;
-  });
-  navLinks.forEach(link => {
-    link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+function isIndiaCell(lon, lat) {
+  return lon > 68 && lon < 97.5 && lat > 7 && lat < 37;
+}
+
+function drawMap() {
+  ctx.fillStyle = '#9bbdd4';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+  ctx.lineWidth = 1;
+  for (let lon = -150; lon <= 150; lon += 30) {
+    const x = Math.floor(lonToGridX(lon) * CELL) + 0.5;
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, canvas.height);
+    ctx.stroke();
+  }
+  for (let lat = -60; lat <= 60; lat += 30) {
+    const y = Math.floor(latToGridY(lat) * CELL) + 0.5;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.stroke();
+  }
+
+  for (let y = 0; y < GRID_ROWS; y++) {
+    for (let x = 0; x < GRID_COLS; x++) {
+      if (!land[y][x]) continue;
+      const lon = (x + 0.5) * (360 / GRID_COLS) - 180;
+      const lat = 90 - (y + 0.5) * (180 / GRID_ROWS);
+      const dither = (x + y) % 2 === 0;
+      let color;
+      if (isIndiaCell(lon, lat)) {
+        color = dither ? '#d4956a' : '#c8825a';
+      } else {
+        color = dither ? '#c8b888' : '#bfae7c';
+      }
+      ctx.fillStyle = color;
+      ctx.fillRect(x * CELL, y * CELL, PX, PX);
+    }
+  }
+}
+
+drawMap();
+
+const pinsLayer = document.getElementById('pins');
+const counterEl = document.getElementById('counter');
+
+function updateCounter() {
+  const v = LOCATIONS.filter(l => l.visited).length;
+  counterEl.textContent = `${v} / ${LOCATIONS.length} visited`;
+}
+
+function buildPins() {
+  pinsLayer.innerHTML = '';
+  LOCATIONS.forEach((loc, i) => {
+    const pin = document.createElement('button');
+    pin.className = 'pin' + (loc.visited ? ' visited' : '');
+    pin.style.left = (((loc.lon + 180) / 360) * 100) + '%';
+    pin.style.top = (((90 - loc.lat) / 180) * 100) + '%';
+    pin.setAttribute('aria-label', `${loc.city}, ${loc.country}`);
+    pin.title = `${loc.city}, ${loc.country}`;
+    pin.addEventListener('click', () => {
+      LOCATIONS[i].visited = true;
+      pin.classList.add('visited');
+      openStory(loc);
+      updateCounter();
+    });
+    pinsLayer.appendChild(pin);
   });
 }
 
-window.addEventListener('scroll', onScroll, { passive: true });
+buildPins();
+updateCounter();
 
+const panel = document.getElementById('story-panel');
+const panelPlace = document.getElementById('story-place');
+const panelDate = document.getElementById('story-date');
+const panelTag = document.getElementById('story-tag');
+const panelBody = document.getElementById('story-body');
 
-// ── Mobile nav toggle ──
-const toggle   = document.querySelector('.nav-toggle');
-const navList  = document.querySelector('.nav-links');
+function openStory(loc) {
+  panelPlace.textContent = `${loc.city}, ${loc.country}`;
+  panelDate.textContent = loc.date;
+  panelTag.textContent = loc.tag;
+  panelBody.textContent = loc.body;
+  panel.classList.add('open');
+  panel.setAttribute('aria-hidden', 'false');
+}
 
-toggle?.addEventListener('click', () => {
-  const open = navList.classList.toggle('open');
-  toggle.classList.toggle('open', open);
-  toggle.setAttribute('aria-expanded', String(open));
+document.getElementById('story-close').addEventListener('click', () => {
+  panel.classList.remove('open');
+  panel.setAttribute('aria-hidden', 'true');
 });
 
-// Close on link click
-navList?.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    navList.classList.remove('open');
-    toggle.classList.remove('open');
-    toggle.setAttribute('aria-expanded', 'false');
-  });
+const readout = document.getElementById('readout');
+const stage = document.getElementById('map-stage');
+stage.addEventListener('mousemove', (e) => {
+  const r = stage.getBoundingClientRect();
+  const xPct = (e.clientX - r.left) / r.width;
+  const yPct = (e.clientY - r.top) / r.height;
+  if (xPct < 0 || xPct > 1 || yPct < 0 || yPct > 1) return;
+  const lon = xPct * 360 - 180;
+  const lat = 90 - yPct * 180;
+  const ns = lat >= 0 ? 'N' : 'S';
+  const ew = lon >= 0 ? 'E' : 'W';
+  readout.textContent = `${Math.abs(lat).toFixed(1)}°${ns}  ${Math.abs(lon).toFixed(1)}°${ew}`;
 });
-
-// Close on outside click
-document.addEventListener('click', (e) => {
-  if (!navbar.contains(e.target)) {
-    navList?.classList.remove('open');
-    toggle?.classList.remove('open');
-    toggle?.setAttribute('aria-expanded', 'false');
-  }
-});
-
-
-// ── Scroll-triggered fade-in (staggered per group) ──
-const fadeEls = document.querySelectorAll('.fade-in');
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-
-    const el = entry.target;
-
-    // If siblings in the same parent are also .fade-in, stagger them
-    const siblings = Array.from(
-      el.parentElement.querySelectorAll('.fade-in:not(.visible)')
-    );
-    const idx = siblings.indexOf(el);
-    const delay = idx >= 0 ? idx * 90 : 0;
-
-    setTimeout(() => el.classList.add('visible'), delay);
-    observer.unobserve(el);
-  });
-}, {
-  threshold:  0.12,
-  rootMargin: '0px 0px -50px 0px',
-});
-
-fadeEls.forEach(el => observer.observe(el));
-
-
-// ── Contact form ──
-document.getElementById('contact-form')?.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const success = document.getElementById('form-success');
-  if (!success) return;
-
-  success.style.display = 'block';
-  e.target.reset();
-
-  setTimeout(() => { success.style.display = 'none'; }, 5000);
-});
-
-
-// ── Smooth-scroll for anchor links ──
-document.querySelectorAll('a[href^="#"]').forEach(link => {
-  link.addEventListener('click', (e) => {
-    const target = document.querySelector(link.getAttribute('href'));
-    if (!target) return;
-    e.preventDefault();
-    const offset = navbar.offsetHeight + 16;
-    const top    = target.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: 'smooth' });
-  });
+stage.addEventListener('mouseleave', () => {
+  readout.textContent = '—';
 });
