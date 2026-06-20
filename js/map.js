@@ -1,3 +1,6 @@
+/* map.js — draws the pixel map and pins, wires pins to the per-place pages.
+   Depends on map-data.js (grid geometry) and data.js (PLACES + helpers). */
+
 const PX = 3;
 const GAP = 1;
 const CELL = PX + GAP;
@@ -58,25 +61,20 @@ const pinsLayer = document.getElementById('pins');
 const counterEl = document.getElementById('counter');
 
 function updateCounter() {
-  const v = LOCATIONS.filter(l => l.visited).length;
-  counterEl.textContent = `${v} / ${LOCATIONS.length} visited`;
+  const v = PLACES.filter(isVisited).length;
+  counterEl.textContent = `${v} / ${PLACES.length} documented`;
 }
 
 function buildPins() {
   pinsLayer.innerHTML = '';
-  LOCATIONS.forEach((loc, i) => {
+  PLACES.forEach((place) => {
     const pin = document.createElement('button');
-    pin.className = 'pin' + (loc.visited ? ' visited' : '');
-    pin.style.left = (((loc.lon + 180) / 360) * 100) + '%';
-    pin.style.top = (((90 - loc.lat) / 180) * 100) + '%';
-    pin.setAttribute('aria-label', `${loc.city}, ${loc.country}`);
-    pin.title = `${loc.city}, ${loc.country}`;
-    pin.addEventListener('click', () => {
-      LOCATIONS[i].visited = true;
-      pin.classList.add('visited');
-      openStory(loc);
-      updateCounter();
-    });
+    pin.className = 'pin' + (isVisited(place) ? ' visited' : '');
+    pin.style.left = (((place.lon + 180) / 360) * 100) + '%';
+    pin.style.top = (((90 - place.lat) / 180) * 100) + '%';
+    pin.setAttribute('aria-label', `${place.city}, ${place.country}`);
+    pin.title = `${place.city}, ${place.country}`;
+    pin.addEventListener('click', () => openPreview(place));
     pinsLayer.appendChild(pin);
   });
 }
@@ -84,17 +82,23 @@ function buildPins() {
 buildPins();
 updateCounter();
 
+/* ── Pin click → quick preview panel that links to the full place page ─────── */
+
 const panel = document.getElementById('story-panel');
 const panelPlace = document.getElementById('story-place');
-const panelDate = document.getElementById('story-date');
-const panelTag = document.getElementById('story-tag');
+const panelCountry = document.getElementById('story-country');
+const panelCount = document.getElementById('story-count');
 const panelBody = document.getElementById('story-body');
+const panelLink = document.getElementById('story-link');
 
-function openStory(loc) {
-  panelPlace.textContent = `${loc.city}, ${loc.country}`;
-  panelDate.textContent = loc.date;
-  panelTag.textContent = loc.tag;
-  panelBody.textContent = loc.body;
+function openPreview(place) {
+  const j = place.journal ? place.journal.length : 0;
+  const p = place.projects ? place.projects.length : 0;
+  panelPlace.textContent = `${place.city}, ${place.country}`;
+  panelCountry.textContent = `${place.lat.toFixed(1)}°, ${place.lon.toFixed(1)}°`;
+  panelCount.textContent = `${j} journal · ${p} projects`;
+  panelBody.textContent = place.summary || 'Nothing documented here yet.';
+  panelLink.href = `place.html?place=${place.slug}`;
   panel.classList.add('open');
   panel.setAttribute('aria-hidden', 'false');
 }
@@ -103,6 +107,8 @@ document.getElementById('story-close').addEventListener('click', () => {
   panel.classList.remove('open');
   panel.setAttribute('aria-hidden', 'true');
 });
+
+/* ── Live coordinate readout ───────────────────────────────────────────────── */
 
 const readout = document.getElementById('readout');
 const stage = document.getElementById('map-stage');

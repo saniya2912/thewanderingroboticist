@@ -142,14 +142,3 @@ function buildLandGrid() {
 
   return grid;
 }
-
-const LOCATIONS = [
-  { city: 'Seattle',     country: 'USA',       lat: 47.6, lon: -122.3, tag: '—', date: '—', visited: false, body: '[description to be added]' },
-  { city: 'London',      country: 'UK',        lat: 51.5, lon: -0.1,   tag: '—', date: '—', visited: true,  body: '[description to be added]' },
-  { city: 'Dublin',      country: 'Ireland',   lat: 53.3, lon: -6.3,   tag: '—', date: '—', visited: false, body: '[description to be added]' },
-  { city: 'Mumbai',      country: 'India',     lat: 19.1, lon: 72.9,   tag: '—', date: '—', visited: false, body: '[description to be added]' },
-  { city: 'Delhi',       country: 'India',     lat: 28.6, lon: 77.2,   tag: '—', date: '—', visited: false, body: '[description to be added]' },
-  { city: 'Pune',        country: 'India',     lat: 18.5, lon: 73.9,   tag: '—', date: '—', visited: false, body: '[description to be added]' },
-  { city: 'Gandhinagar', country: 'India',     lat: 23.2, lon: 72.7,   tag: '—', date: '—', visited: false, body: '[description to be added]' },
-  { city: 'Singapore',   country: 'Singapore', lat: 1.3,  lon: 103.8,  tag: '—', date: '—', visited: false, body: '[description to be added]' }
-];

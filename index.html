@@ -9,11 +9,11 @@
 <body>
 
   <nav id="navbar">
-    <a href="#" class="nav-logo">the <span class="wandering">wandering</span> roboticist</a>
+    <a href="index.html" class="nav-logo">the <span class="wandering">wandering</span> roboticist</a>
     <ul class="nav-links">
-      <li><a href="#journal">journal</a></li>
-      <li><a href="#projects">projects</a></li>
-      <li><a href="#about">about</a></li>
+      <li><a href="journal.html">journal</a></li>
+      <li><a href="projects.html">projects</a></li>
+      <li><a href="about.html">about</a></li>
     </ul>
   </nav>
 
@@ -24,21 +24,22 @@
     </div>
   </div>
 
-  <div class="counter" id="counter">0 / 8 visited</div>
+  <div class="counter" id="counter">0 / 8 documented</div>
   <div class="readout" id="readout">—</div>
 
   <aside id="story-panel" aria-hidden="true">
     <button class="story-close" id="story-close" aria-label="Close">×</button>
     <h2 class="story-place" id="story-place">—</h2>
     <div class="story-meta">
-      <span id="story-date">—</span>
-      <span class="story-tag" id="story-tag">—</span>
+      <span id="story-country">—</span>
+      <span class="story-tag" id="story-count">—</span>
     </div>
     <p class="story-body" id="story-body">—</p>
-    <a href="#" class="story-link">read full entry →</a>
+    <a href="#" class="story-link" id="story-link">view place →</a>
   </aside>
 
   <script src="js/map-data.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/map.js"></script>
 </body>
 </html>
